@@ -1,6 +1,6 @@
 <#
 .SYNOPSIS
-    Cross-Protocol Breeder - Windows Smart Installer (ASCII-safe)
+    Cross-Protocol Breeder - Windows Smart Installer
 .DESCRIPTION
     Installs sing-box extended on Windows 10/11.
     Supports proxy (socks/http) and TUN (global) modes.
@@ -28,7 +28,6 @@ $SB_VERSION = "1.13.14-extended-2.5.2"
 $REPO_RAW = "https://raw.githubusercontent.com/Sophiedevops/cross-protocol-breeder/main"
 $BINARY_BASE = "https://github.com/Sophiedevops/cross-protocol-breeder/releases/download/Binary"
 $MANIFEST_URL = "$BINARY_BASE/MANIFEST.txt"
-$API_URL = "https://api.github.com/repos/shtorm-7/sing-box-extended/releases/tags/v$SB_VERSION"
 
 # --- Color helpers ---
 function Write-Line  { param($m) Write-Host ("=" * 70) -ForegroundColor Cyan; Write-Host ("  " + $m) -ForegroundColor Cyan; Write-Host ("=" * 70) -ForegroundColor Cyan }
@@ -59,18 +58,17 @@ function Invoke-SafeDownload {
         [string]$OutFile,
         [int]$TimeoutSec = 300
     )
-    
+
     try {
         [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
         $wc = New-Object System.Net.WebClient
         $wc.Headers.Add("User-Agent", "CrossProtocolBreeder/3.3")
-        
-        # Background job
+
         $job = Start-Job -ScriptBlock {
             param($u, $o)
             (New-Object System.Net.WebClient).DownloadFile($u, $o)
         } -ArgumentList $Url, $OutFile
-        
+
         $elapsed = 0
         while (($job.State -eq "Running") -and ($elapsed -lt $TimeoutSec)) {
             $pct = 0
@@ -80,15 +78,15 @@ function Invoke-SafeDownload {
             $elapsed = $elapsed + 0.5
         }
         Write-Host ""
-        
+
         if ($job.State -eq "Running") {
             Stop-Job $job -PassThru | Remove-Job -Force
             throw "Timeout after $TimeoutSec seconds"
         }
-        
+
         Receive-Job $job -Wait | Out-Null
         Remove-Job $job -Force
-        
+
         if ((-not (Test-Path $OutFile)) -or ((Get-Item $OutFile).Length -lt 1024)) {
             throw "File too small or missing"
         }
@@ -105,20 +103,21 @@ function Test-Sha256 {
         [string]$FilePath,
         [string]$ExpectedSha
     )
-    
+
     if ([string]::IsNullOrEmpty($ExpectedSha)) {
         Write-Warn "No expected SHA, skipping verification"
         return $true
     }
-    
+
     $actual = (Get-FileHash -Path $FilePath -Algorithm SHA256).Hash.ToLower()
     if ($actual -eq $ExpectedSha.ToLower()) {
         Write-OK "SHA256 verified"
         return $true
-    } else {
+    }
+    else {
         Write-Err "SHA256 MISMATCH!"
-        Write-Err "  Expected: $ExpectedSha"
-        Write-Err "  Actual:   $actual"
+        Write-Err ("  Expected: " + $ExpectedSha)
+        Write-Err ("  Actual:   " + $actual)
         return $false
     }
 }
@@ -179,13 +178,13 @@ if (($NeedAdmin) -and (-not $IsAdmin)) {
     if ($ProxyOnly)   { $argList = $argList + " -ProxyOnly" }
     if ($TunOnly)     { $argList = $argList + " -TunOnly" }
     if ($Unattended)  { $argList = $argList + " -Unattended" }
-    
+
     try {
         Start-Process -FilePath powershell.exe -Verb RunAs -ArgumentList $argList -Wait
         exit 0
     }
     catch {
-        Write-Err "Failed to elevate: $_"
+        Write-Err ("Failed to elevate: " + $_)
         Write-Info "Continuing in proxy-only mode"
         $InstallTun = $false
     }
@@ -204,7 +203,6 @@ $AssetName = switch ($Arch) {
 
 Write-Info ("Asset: " + $AssetName)
 
-# Create install dir
 if (-not (Test-Path $InstallDir)) {
     New-Item -ItemType Directory -Path $InstallDir -Force | Out-Null
 }
@@ -213,7 +211,6 @@ Set-Location $InstallDir
 $ZipFile = Join-Path $InstallDir $AssetName
 $WorkZip = $ZipFile + ".tmp"
 
-# Download
 $ok = Invoke-SafeDownload -Url ("$BINARY_BASE/" + $AssetName) -OutFile $WorkZip
 if (-not $ok) {
     Write-Err ("Failed to download " + $AssetName)
@@ -221,11 +218,10 @@ if (-not $ok) {
     exit 1
 }
 
-# Verify SHA256 if manifest available
 $ManifestPath = Join-Path $InstallDir "MANIFEST.txt"
 try {
     Invoke-WebRequest -Uri $MANIFEST_URL -OutFile $ManifestPath -UseBasicParsing -TimeoutSec 30 | Out-Null
-    
+
     if (Test-Path $ManifestPath) {
         $expected = $null
         Get-Content $ManifestPath | ForEach-Object {
@@ -233,13 +229,14 @@ try {
                 $expected = $matches[1]
             }
         }
-        
+
         if ($expected) {
             if (-not (Test-Sha256 -FilePath $WorkZip -ExpectedSha $expected)) {
                 Remove-Item $WorkZip -Force -ErrorAction SilentlyContinue
                 exit 1
             }
-        } else {
+        }
+        else {
             Write-Warn ("SHA256 for " + $AssetName + " not found in manifest")
         }
     }
@@ -254,7 +251,6 @@ Write-OK ("Downloaded: " + [math]::Round(((Get-Item $ZipFile).Length / 1MB), 2) 
 # === [4/7] Extract ===
 Write-Step "4/7] Extract binary"
 
-# Use Expand-Archive
 try {
     Expand-Archive -Path $ZipFile -DestinationPath $InstallDir -Force
     Write-OK ("Extracted to " + $InstallDir)
@@ -266,7 +262,6 @@ catch {
 
 Remove-Item $ZipFile -Force -ErrorAction SilentlyContinue
 
-# Find sing-box.exe
 $ExePath = $null
 $found = Get-ChildItem -Path $InstallDir -Recurse -Filter "sing-box.exe" -ErrorAction SilentlyContinue | Select-Object -First 1
 if ($found) {
@@ -279,7 +274,6 @@ else {
 
 Write-OK ("Binary: " + $ExePath)
 
-# Test binary
 $version = & $ExePath version 2>&1
 if ($LASTEXITCODE -ne 0) {
     Write-Err "Binary does not run!"
@@ -291,7 +285,6 @@ Write-OK ("Version: " + $version[0])
 # === [5/7] Download scripts ===
 Write-Step "5/7] Download scripts and configuration"
 
-# Shell scripts
 $ShellFiles = @("update_hybrid.sh", "converter.lua", "conf3_final.json", "gen_links.sh")
 foreach ($f in $ShellFiles) {
     $dest = Join-Path $InstallDir $f
@@ -304,7 +297,6 @@ foreach ($f in $ShellFiles) {
     }
 }
 
-# PowerShell scripts (from windows/ subfolder)
 $PSScripts = @("update_hybrid.ps1", "gen_links.ps1", "generate_tun_config.ps1", "scheduler_setup.ps1")
 foreach ($f in $PSScripts) {
     $dest = Join-Path $InstallDir $f
@@ -317,7 +309,6 @@ foreach ($f in $PSScripts) {
     }
 }
 
-# BAT wrappers
 $BatFiles = @("start-proxy.bat", "start-tun.bat", "stop.bat", "update-and-start.bat", "uninstall.bat")
 foreach ($b in $BatFiles) {
     $dest = Join-Path $InstallDir $b
@@ -338,21 +329,57 @@ if (-not (Test-Path $CertDir)) {
     New-Item -ItemType Directory -Path $CertDir -Force | Out-Null
 }
 
-# Generate EC key + self-signed cert via openssl if available
-$opensslAvailable = (Get-Command openssl -ErrorAction SilentlyContinue) -ne $null
+$opensslAvailable = $false
+$opensslCmd = Get-Command openssl -ErrorAction SilentlyContinue
+if ($opensslCmd) {
+    # Test openssl actually works
+    & openssl version 2>$null | Out-Null
+    if ($LASTEXITCODE -eq 0) {
+        $opensslAvailable = $true
+    }
+}
+
 if ($opensslAvailable) {
     & openssl ecparam -genkey -name prime256v1 -out (Join-Path $CertDir "h2.pem") 2>$null
-    & openssl req -new -x509 -days 36500 -key (Join-Path $CertDir "h2.pem") `
-        -out (Join-Path $CertDir "h2.cert") -subj "/CN=cloudflare.com" 2>$null
-    Write-OK "Certificates generated (openssl)"
+    if ($LASTEXITCODE -eq 0) {
+        & openssl req -new -x509 -days 36500 -key (Join-Path $CertDir "h2.pem") `
+            -out (Join-Path $CertDir "h2.cert") -subj "/CN=cloudflare.com" 2>$null
+        if ($LASTEXITCODE -eq 0) {
+            Write-OK "Certificates generated (openssl)"
+        }
+        else {
+            Write-Warn "openssl failed, using .NET fallback"
+            $opensslAvailable = $false
+        }
+    }
+    else {
+        Write-Warn "openssl failed, using .NET fallback"
+        $opensslAvailable = $false
+    }
 }
-else {
-    Write-Warn "openssl not found, using .NET fallback"
-    
+
+if (-not $opensslAvailable) {
+    Write-Warn "Using .NET fallback (RSACryptoServiceProvider)"
+
     Add-Type -AssemblyName System.Security
-    
-    # Simple .NET cert generation
-    $rsa = [System.Security.Cryptography.RSA]::Create(2048)
+
+    # Use legacy RSACryptoServiceProvider (works on ALL Windows versions 7+)
+    $rsa = New-Object System.Security.Cryptography.RSACryptoServiceProvider(2048)
+
+    # Export private key as PEM
+    $privKeyBytes = $rsa.ExportCspBlob($true)
+    $b64 = [Convert]::ToBase64String($privKeyBytes, [Base64FormattingOptions]::InsertLineBreaks)
+
+    $pemLines = @("-----BEGIN RSA PRIVATE KEY-----")
+    for ($i = 0; $i -lt $b64.Length; $i += 64) {
+        $end = [Math]::Min($i + 64, $b64.Length)
+        $pemLines += $b64.Substring($i, $end - $i)
+    }
+    $pemLines += "-----END RSA PRIVATE KEY-----"
+
+    [System.IO.File]::WriteAllText((Join-Path $CertDir "h2.pem"), ($pemLines -join "`n"))
+
+    # Generate self-signed certificate
     $req = New-Object System.Security.Cryptography.X509Certificates.CertificateRequest(
         "CN=cloudflare.com",
         $rsa,
@@ -364,11 +391,11 @@ else {
         [DateTimeOffset]::Now.AddDays(36500)
     )
     [System.IO.File]::WriteAllBytes((Join-Path $CertDir "h2.cert"), $cert.Export("Cert"))
-    
-    $pemKey = $rsa.ExportRSAPrivateKey()
-    [System.IO.File]::WriteAllBytes((Join-Path $CertDir "h2.pem"), $pemKey)
-    
-    Write-OK "Certificates generated (.NET)"
+
+    # Cleanup
+    $rsa.Dispose()
+
+    Write-OK "Certificates generated (.NET, RSACryptoServiceProvider)"
 }
 
 # Generate passwords
@@ -380,7 +407,7 @@ $ConfigFile = Join-Path $InstallDir "conf3_final.json"
 if (Test-Path $ConfigFile) {
     try {
         $config = Get-Content $ConfigFile -Raw | ConvertFrom-Json
-        
+
         foreach ($i in $config.inbounds) {
             if ($i.tag -eq "ss-in") {
                 if ($i.PSObject.Properties["password"]) {
@@ -393,7 +420,7 @@ if (Test-Path $ConfigFile) {
                 }
             }
         }
-        
+
         $config | ConvertTo-Json -Depth 20 | Set-Content $ConfigFile -Encoding UTF8
         Write-OK "Passwords injected into config"
     }
@@ -405,29 +432,27 @@ if (Test-Path $ConfigFile) {
 # === [7/7] Create scheduled task ===
 Write-Step "7/7] Create scheduled task for auto-update"
 
-$UpdateScript = Join-Path $InstallDir "update_hybrid.ps1"
 $UpdateBat = Join-Path $InstallDir "update-and-start.bat"
 $TaskName = "CrossProtocolBreeder.Update"
 
 if (Test-Path $UpdateBat) {
-    # Remove old task if exists
     $existing = Get-ScheduledTask -TaskName $TaskName -ErrorAction SilentlyContinue
     if ($existing) {
         Unregister-ScheduledTask -TaskName $TaskName -Confirm:$false -ErrorAction SilentlyContinue
         Write-Info "Removed old scheduled task"
     }
-    
+
     $Action = New-ScheduledTaskAction `
         -Execute "cmd.exe" `
         -Argument ("/c `"" + $UpdateBat + "`" proxy")
-    
+
     $Trigger = New-ScheduledTaskTrigger -Daily -At "04:00"
-    
+
     $Settings = New-ScheduledTaskSettingsSet `
         -AllowStartIfOnBatteries `
         -DontStopIfGoingOnBatteries `
         -StartWhenAvailable
-    
+
     try {
         Register-ScheduledTask `
             -TaskName $TaskName `
@@ -437,7 +462,7 @@ if (Test-Path $UpdateBat) {
             -Description "Cross-Protocol Breeder auto-update (daily at 04:00)" `
             -RunLevel Highest `
             -ErrorAction Stop | Out-Null
-        
+
         Write-OK ("Scheduled task created: " + $TaskName)
     }
     catch {
