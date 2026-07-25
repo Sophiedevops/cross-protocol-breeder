@@ -1,53 +1,44 @@
 @echo off
-REM Запуск sing-box в режиме прокси (SOCKS5/HTTP)
-REM Не требует прав администратора
-
+chcp 65001 >NUL
 setlocal
-set "SB_DIR=%~dp0"
-set "SB_EXE=%SB_DIR%sing-box.exe"
-set "CONFIG=%SB_DIR%conf3_final.json"
-set "CONFIG_HYBRID=%SB_DIR%conf_chain6.json"
 
+set "SB_DIR=%~dp0"
 cd /d "%SB_DIR%"
 
-if not exist "%SB_EXE%" (
+set "EXE=%SB_DIR%sing-box.exe"
+set "CFG_HYBRID=%SB_DIR%conf_chain6.json"
+set "CFG_BASE=%SB_DIR%conf3_final.json"
+
+if not exist "%EXE%" (
     echo [ERR] sing-box.exe not found
     pause
     exit /b 1
 )
 
-REM Используем гибридный конфиг если есть, иначе базовый
-if exist "%CONFIG_HYBRID%" (
-    set "CFG=%CONFIG_HYBRID%"
-    echo [INFO] Using hybrid config: conf_chain6.json
+REM Выбираем конфиг
+if exist "%CFG_HYBRID%" (
+    set "CFG=%CFG_HYBRID%"
 ) else (
-    set "CFG=%CONFIG%"
-    echo [INFO] Using base config: conf3_final.json
-    echo [INFO] (Run update_hybrid.ps1 to generate hybrid config)
+    set "CFG=%CFG_BASE%"
+    echo [WARN] conf_chain6.json not found, using conf3_final.json
+    echo [INFO] Run update_hybrid.ps1 first to build hybrid config
 )
+
+REM Останавливаем старый процесс
+taskkill /F /IM sing-box.exe 2>NUL
+timeout /t 1 >NUL
 
 echo.
 echo ============================================================
-echo   Starting sing-box in PROXY mode
+echo   sing-box PROXY mode
 echo   SOCKS5: 127.0.0.1:20184
 echo   HTTP:   127.0.0.1:20181
-echo   Mixed:  127.0.0.1:20185
 echo ============================================================
 echo.
-echo   To use: configure your browser/app to use these proxies
-echo   To stop: close this window or run stop.bat
-echo.
 
-REM Проверяем, не запущен ли уже
-tasklist /FI "IMAGENAME eq sing-box.exe" 2>NUL | find /I /N "sing-box.exe">NUL
-if not errorlevel 1 (
-    echo [WARN] sing-box is already running. Stopping old instance...
-    taskkill /F /IM sing-box.exe >NUL 2>&1
-    timeout /t 2 >NUL
-)
-
-"%SB_EXE%" run -c "%CFG%"
+"%EXE%" run -c "%CFG%"
 
 echo.
 echo [INFO] sing-box stopped
 pause
+
