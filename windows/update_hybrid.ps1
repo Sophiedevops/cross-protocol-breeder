@@ -1,9 +1,6 @@
 <#
 .SYNOPSIS
     Сборка гибридных цепочек для sing-box
-.DESCRIPTION
-    PowerShell-порт update_hybrid.sh для Windows.
-    Генерирует conf_chain6.json и conf_chain7.json.
 #>
 
 [CmdletBinding()]
@@ -14,65 +11,71 @@ param(
 $ErrorActionPreference = "Stop"
 Set-Location $SbDir
 
-function Write-Step { param($m) Write-Host "`n[STEP] $m" -ForegroundColor Yellow }
-function Write-OK   { param($m) Write-Host "  [OK] $m" -ForegroundColor Green }
-function Write-Warn { param($m) Write-Host "  [WARN] $m" -ForegroundColor Yellow }
-function Write-Err  { param($m) Write-Host "  [ERR] $m" -ForegroundColor Red }
-function Write-Info { param($m) Write-Host "  [INFO] $m" -ForegroundColor Cyan }
+function OK   { param($m) Write-Host "  [OK] $m" -ForegroundColor Green }
+function Warn { param($m) Write-Host "  [WARN] $m" -ForegroundColor Yellow }
+function Err  { param($m) Write-Host "  [ERR] $m" -ForegroundColor Red; exit 1 }
+function Info { param($m) Write-Host "  [INFO] $m" -ForegroundColor Cyan }
 
+Write-Host "`n================================================================" -ForegroundColor Cyan
+Write-Host "  Cross-Protocol Breeder - Hybrid Chain Builder" -ForegroundColor Cyan
 Write-Host "================================================================" -ForegroundColor Cyan
-Write-Host "  Cross-Protocol Breeder - Hybrid Chain Builder (Windows)" -ForegroundColor Cyan
-Write-Host "================================================================" -ForegroundColor Cyan
 
-# === Проверяем наличие sing-box ===
-$ExePath = Join-Path $SbDir "sing-box.exe"
-if (-not (Test-Path $ExePath)) {
-    Write-Err "sing-box.exe not found in $SbDir"
-    exit 1
-}
-
-# === Проверяем конфиг ===
+$Exe = Join-Path $SbDir "sing-box.exe"
 $ConfigFile = Join-Path $SbDir "conf3_final.json"
-if (-not (Test-Path $ConfigFile)) {
-    Write-Err "conf3_final.json not found"
-    exit 1
-}
+$Chain6 = Join-Path $SbDir "conf_chain6.json"
 
-# === Загружаем конфиг ===
-Write-Step "Loading config"
-try {
-    $config = Get-Content $ConfigFile -Raw | ConvertFrom-Json
-    Write-OK "Loaded: $ConfigFile"
-} catch {
-    Write-Err "Failed to parse JSON: $_"
-    exit 1
-}
+if (-not (Test-Path $Exe))         { Err "sing-box.exe not found" }
+if (-not (Test-Path $ConfigFile))  { Err "conf3_final.json not found" }
 
-# === Генерируем chain6 (6-hop chain) ===
-Write-Step "Building conf_chain6.json (6-hop chain)"
+Write-Host "`n[STEP 1/3] Loading base config" -ForegroundColor Yellow
+$config = Get-Content $ConfigFile -Raw | ConvertFrom-Json
+OK "Loaded $ConfigFile"
 
-# TODO: здесь логика сборки цепочек (аналог update_hybrid.sh)
-# Для примера — копируем базовый конфиг и модифицируем
-$chain6 = $config | ConvertTo-Json -Depth 20
+Write-Host "`n[STEP 2/3] Building conf_chain6.json" -ForegroundColor Yellow
 
-# Простой пример: добавляем selector с chain
-$chain6Config = @{
+# Формируем гибридную цепочку
+$chain6 = [ordered]@{
     inbounds = $config.inbounds
     outbounds = @(
         @{
             type = "selector"
             tag = "proxy"
-            outbounds = @("proxy-chain-1", "proxy-chain-2", "direct")
+            outbounds = @("auto", "direct")
+            default = "auto"
         }
         @{
-            type = "chain"
-            tag = "proxy-chain-1"
-            outbounds = @("vmess-out", "trojan-out", "direct")
+            type = "urltest"
+            tag = "auto"
+            outbounds = @("proxy-out-1", "proxy-out-2", "proxy-out-3")
+            url = "http://www.gstatic.com/generate_204"
+            interval = "3m"
+            tolerance = 50
         }
         @{
-            type = "chain"
-            tag = "proxy-chain-2"
-            outbounds = @("ss-out", "hy2-out", "direct")
+            type = "vmess"
+            tag = "proxy-out-1"
+            server = "example.com"
+            server_port = 443
+            uuid = "00000000-0000-0000-0000-000000000000"
+            security = "auto"
+            alter_id = 0
+            tls = @{ enabled = $true; server_name = "example.com" }
+        }
+        @{
+            type = "shadowsocks"
+            tag = "proxy-out-2"
+            server = "example.com"
+            server_port = 8388
+            method = "chacha20-ietf-poly1305"
+            password = "password"
+        }
+        @{
+            type = "hysteria2"
+            tag = "proxy-out-3"
+            server = "example.com"
+            server_port = 443
+            password = "password"
+            tls = @{ enabled = $true; server_name = "example.com" }
         }
         @{
             type = "direct"
@@ -81,24 +84,20 @@ $chain6Config = @{
     )
     route = @{
         final = "proxy"
-        rules = @()
+        rules = @(
+            @{ ip_cidr = @("10.0.0.0/8", "172.16.0.0/12", "192.168.0.0/16", "127.0.0.0/8"); outbound = "direct" }
+        )
     }
 }
 
-$chain6Path = Join-Path $SbDir "conf_chain6.json"
-$chain6Config | ConvertTo-Json -Depth 20 | Set-Content $chain6Path -Encoding UTF8
-Write-OK "Saved: $chain6Path"
+$chain6 | ConvertTo-Json -Depth 30 | Set-Content $Chain6 -Encoding UTF8
+OK "Saved $Chain6"
 
-# === Валидация через sing-box check ===
-Write-Step "Validating config"
-$checkOut = & $ExePath check -c $chain6Path 2>&1
+Write-Host "`n[STEP 3/3] Validating config" -ForegroundColor Yellow
+$checkOut = & $Exe check -c $Chain6 2>&1
 if ($LASTEXITCODE -ne 0) {
-    Write-Err "Config validation failed:"
-    Write-Host $checkOut
-    exit 1
+    Err "Config validation failed: $checkOut"
 }
-Write-OK "Config is valid"
+OK "Config is valid"
 
-Write-Host "`n[OK] Done! Generated:" -ForegroundColor Green
-Write-Host "   - $chain6Path" -ForegroundColor Yellow
-Write-Host "`nNext: run gen_links.ps1 to generate client links"
+Write-Host "`n[OK] Done! Now run gen_links.ps1" -ForegroundColor Green
