@@ -1,19 +1,17 @@
 @echo off
-REM Остановка всех процессов sing-box
+chcp 65001 >NUL
+setlocal
 
 echo.
 echo [INFO] Stopping sing-box...
-
 taskkill /F /IM sing-box.exe 2>NUL
 if errorlevel 1 (
-    echo [INFO] No running sing-box processes found
+    echo [INFO] No running processes
 ) else (
-    echo [OK] sing-box stopped
+    echo [OK] Stopped
 )
 
-REM Чистим DNS-кеш (на случай если был TUN)
 ipconfig /flushdns >NUL 2>&1
 echo [OK] DNS cache flushed
-
 echo.
 pause
