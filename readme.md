@@ -68,7 +68,7 @@ content = """# cross-protocol-breeder
 
 ```bash
 # 1. Скачайте и запустите установщик
-wget --no-check-certificate -O install.sh https://github.com/Sophiedevops/cross-protocol-breeder/main/install.sh
+curl -k -L -o install.sh https://raw.githubusercontent.com/Sophiedevops/cross-protocol-breeder/main/install.sh
 chmod +x install.sh
 ./install.sh
 
