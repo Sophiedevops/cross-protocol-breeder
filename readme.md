@@ -71,7 +71,7 @@ content = """# cross-protocol-breeder
 ssh admin@192.168.1.1
 
 # 2. Скачайте и запустите установщик
-wget -O install.sh https://github.com/Sophiedevops/cross-protocol-breeder/main/install.sh
+wget --no-check-certificate -O install.sh https://github.com/Sophiedevops/cross-protocol-breeder/main/install.sh
 chmod +x install.sh
 ./install.sh
 
