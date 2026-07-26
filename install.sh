@@ -849,3 +849,5 @@ log "Запустите: ${GREEN}./update_hybrid.sh${RESET}"
 log ""
 
 ./gen_links.sh 2>/dev/null
+sleep 2
+./update_hybrid.sh
