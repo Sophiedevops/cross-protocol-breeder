@@ -67,10 +67,7 @@ content = """# cross-protocol-breeder
 Установщик проверит Entware, поставит зависимости (`curl jq lua`), скачает скрипты и настроит автозапуск.
 
 ```bash
-# 1. Подключитесь к роутеру по SSH
-ssh admin@192.168.1.1
-
-# 2. Скачайте и запустите установщик
+# 1. Скачайте и запустите установщик
 wget --no-check-certificate -O install.sh https://github.com/Sophiedevops/cross-protocol-breeder/main/install.sh
 chmod +x install.sh
 ./install.sh
