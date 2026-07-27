@@ -1,48 +1,38 @@
-# 🧬 cross-protocol-breeder
-
-```text
-      /\_/\   [PROXY HYBRID MODULE • ENGINE v6]
+🧬 cross-protocol-breeder
+text
+      /\_/\   [PROXY HYBRID MODULE • ENGINE v6 • SMART INSTALLER v3.3]
      ( o.o )  
       > ^ <   Cross-Protocol Breeder
            |\__/,|   (`\
          _.|o o  |_   ) )
         -(((---(((--------
-```
+<p align="center"> <img alt="platform" src="https://img.shields.io/badge/Firmware-OpenWrt%20%C2%B7%20Padavan%20%C2%B7%20Merlin%20%C2%B7%20Keenetic%20%C2%B7%20Entware-1f6feb?style=for-the-badge&logo=openwrt&logoColor=white"> <img alt="arch" src="https://img.shields.io/badge/Arch-Multi--Architecture%20(9%20targets)-orange?style=for-the-badge&logo=linux&logoColor=white"> <img alt="libc" src="https://img.shields.io/badge/libc-auto--detect%20(musl%20%2F%20glibc%20%2F%20uClibc)-4EAA25?style=for-the-badge&logo=gnubash&logoColor=white"> <img alt="installer" src="https://img.shields.io/badge/Installer-v3.3%20Smart%20Detect-9c27b0?style=for-the-badge&logo=cachet&logoColor=white"> <img alt="langs" src="https://img.shields.io/badge/Docs-5%20languages-e91e63?style=for-the-badge&logo=googletranslate&logoColor=white"> </p> <h3 align="center">🌈 Hybrid Multi-Hop Proxy Chain Builder — Now Multi-Architecture 🌈</h3> <div align="center">
 
-<p align="center">
-  <img alt="platform" src="https://img.shields.io/badge/Platform-Padavan%20%2F%20Entware-1f6feb?style=for-the-badge&logo=openwrt&logoColor=white">
-  <img alt="arch" src="https://img.shields.io/badge/Arch-MIPSLE-orange?style=for-the-badge&logo=linux&logoColor=white">
-  <img alt="stack" src="https://img.shields.io/badge/Made%20with-Shell%20%2B%20Lua-4EAA25?style=for-the-badge&logo=gnubash&logoColor=white">
-  <img alt="engine" src="https://img.shields.io/badge/Engine-v6-9c27b0?style=for-the-badge&logo=cachet&logoColor=white">
-  <img alt="langs" src="https://img.shields.io/badge/Docs-5%20languages-e91e63?style=for-the-badge&logo=googletranslate&logoColor=white">
-</p>
+🖥️ Поддерживаемые платформы / Supported targets
 
-<h3 align="center">🌈 Hybrid Multi-Hop Proxy Chain Builder for Embedded Routers 🌈</h3>
-
-<div align="center">
-
-### 🌐 Доступные языки / Available languages
-
-[![RU](https://img.shields.io/badge/🇷🇺-Русский-0039A6?style=for-the-badge)](#-русский)
-[![EN](https://img.shields.io/badge/🇬🇧-English-C8102E?style=for-the-badge)](#-english)
-[![FA](https://img.shields.io/badge/🇮🇷-فارسی-239F40?style=for-the-badge)](#-فارسی)
-[![ZH](https://img.shields.io/badge/🇨🇳-中文-DE2910?style=for-the-badge)](#-中文)
-[![AR](https://img.shields.io/badge/🇸🇦-العربية-006C35?style=for-the-badge)](#-العربية)
-
+Семейство	Варианты
+🦾 ARM	armv6 · armv7 · aarch64
+🧩 MIPS	mips (BE) · mipsel (LE) · mips64 · mips64el
+🚀 RISC-V	riscv64
+🐉 LoongArch	loongarch64
+🖥️ IBM Z	s390x
+📚 libc	musl · glibc · uClibc — определяется автоматически
+🏠 Прошивка	OpenWrt · Padavan · Merlin (Asuswrt) · Keenetic · Entware
 </div>
+🌐 Доступные языки / Available languages
 
+Show Image Show Image Show Image Show Image Show Image
+
+🇷🇺 Русский
+
+🧬 Автоматическое построение каскадных multi-hop конфигураций путём кросс-протокольного «скрещивания» — теперь на любом поддерживаемом роутере: MIPS, ARM, RISC-V и не только.
+
+🧩 Что это такое?
+
+Cross-Protocol Breeder — интеллектуальный шелл-скрипт, который автоматически загружает подписки, тестирует скорость узлов и строит гибридные каскады (например, ss → vless, trojan → ss).
+
+Скрипт решает задачу создания устойчивых к блокировкам цепочек на слабых встраиваемых роутерах — от классических MIPS/MIPSLE (Padavan, Entware) до ARM (Merlin, Keenetic) и RISC-V / LoongArch / s390x систем. «Умный установщик» (install.sh v3.3) сам определяет архитектуру процессора, порядок байт (endianness) и тип libc (musl/glibc/uClibc), подбирает нужный бинарник и проверяет его флагом version — а движок (update_hybrid.sh) полностью избегает «эффекта матрёшки» (избыточного вложенного TLS).
 ---
-
-## 🇷🇺 Русский
-
-> 🧬 *Автоматическое построение каскадных multi-hop конфигураций путём кросс-протокольного «скрещивания» прямо на слабом MIPS-роутере.*
-
-### 🧩 Что это такое?
-
-**Cross-Protocol Breeder** — интеллектуальный шелл-скрипт для роутеров под управлением **Entware/Padavan**, который автоматически загружает подписки, тестирует скорость узлов и строит **гибридные каскады** (например, `ss → vless`, `trojan → ss`).
-
-Скрипт решает задачу создания устойчивых к блокировкам цепочек на роутере с **дефицитом ОЗУ и слабым процессором MIPSLE**, полностью избегая «эффекта матрёшки» (избыточного вложенного TLS).
-
 <details>
 <summary>📦 <b>Состав проекта (нажмите, чтобы развернуть)</b></summary>
 <br>
