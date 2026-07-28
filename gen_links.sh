@@ -3,7 +3,7 @@
 # gen_links.sh (Cross-Protocol Breeder Edition)
 # =====================================================================
 
-WORKDIR="/opt/tmp_sb_ext/sing-box-1.13.14-extended-2.5.2-linux-mipsle"
+WORKDIR="/opt/sb-breeder"
 CONF="$WORKDIR/conf_chain6.json"
 OUT_FILE="$WORKDIR/clients.txt"
 
