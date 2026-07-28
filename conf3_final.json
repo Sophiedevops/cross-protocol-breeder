@@ -209,8 +209,8 @@
       ],
       "tls": {
         "enabled": true,
-        "certificate_path": "/opt/tmp_sb_ext/sing-box-1.13.12-extended-2.4.1-linux-mipsle/certs/grpc/h2.cert",
-        "key_path": "/opt/tmp_sb_ext/sing-box-1.13.12-extended-2.4.1-linux-mipsle/certs/grpc/h2.pem"
+        "certificate_path": "/opt/sb-breeder/certs/grpc/h2.cert",
+        "key_path": "/opt/sb-breeder/certs/grpc/h2.pem"
       }
     },
     {
