@@ -1,7 +1,7 @@
 # 🧬 cross-protocol-breeder
 
 ```text
-      /\_/\   [PROXY HYBRID MODULE • ENGINE v6]
+      /\_/\   [PROXY HYBRID MODULE ENGINE ]
      ( o.o )  
       > ^ <   Cross-Protocol Breeder
            |\__/,|   (`\
@@ -25,11 +25,10 @@
 
 | Семейство / Family | Варианты / Variants |
 |---|---|
-| 🦾 ARM | `armv6` · `armv7` · `aarch64` |
-| 🧩 MIPS | `mips` (BE) · `mipsel` (LE) · `mips64` · `mips64el` |
+| 🦾 ARM |  `armv7` · `aarch64` |
+| 🧩 MIPS | `mips` (BE) · `mipsel` (LE) |
 | 🚀 RISC-V | `riscv64` |
 | 🐉 LoongArch | `loongarch64` |
-| 🖥️ IBM Z | `s390x` |
 | 📚 libc | `musl` · `glibc` · `uClibc` — определяется автоматически |
 | 🏠 Прошивка / Firmware | OpenWrt · Padavan · Merlin (Asuswrt) · Keenetic · Entware |
 
