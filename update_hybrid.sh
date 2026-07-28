@@ -26,17 +26,17 @@ echo -e "${RESET}"
 # =====================================================================
 # ПОЛЬЗОВАТЕЛЬСКИЕ НАСТРОЙКИ (МОЖНО РЕДАКТИРОВАТЬ)
 # =====================================================================
-CHAIN_TYPES="ss-ss ss-vless ss-trojan vless-ss trojan-ss"
+CHAIN_TYPES="vless-ss ss-ss ss-vless ss-trojan trojan-ss"
 
 ENCRYPTION_PRIORITY=1
 ANCHOR_POOL_SIZE=5
 EXIT_POOL_SIZE=10
 WANTED_CHAINS=6
-MIN_POOL_SPEED_KBPS=700
+MIN_POOL_SPEED_KBPS=800
 MIN_CHAIN_SPEED_KBPS=400
 
 # =====================================================================
-# ЗАЩИТНЫЙ БЛОК (ДЕФОЛТЫ) - без обфускации, просто fallback на случай,
+# ЗАЩИТНЫЙ БЛОК (ДЕФОЛТЫ) - просто fallback на случай,
 # если один из пунктов выше был случайно закомментирован/удалён.
 # =====================================================================
 : ${CHAIN_TYPES:="ss-ss ss-vless ss-trojan vless-ss trojan-ss"}
