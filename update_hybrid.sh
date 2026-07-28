@@ -88,8 +88,8 @@ echo -e "    ${GREEN}Approved sequence: [ $CHAIN_TYPES ]${RESET}"
 TEST_PORT=25556
 TEST_API_PORT=9093
 
-WORKDIR="/opt/tmp_sb_ext/sing-box-1.13.14-extended-2.5.2-linux-mipsle/"
-BIN="$WORKDIR/sing-box"
+WORKDIR="/opt/sb-breeder/"
+BIN="$WORKDIR/sb-breeder"
 CONF_BASE="$WORKDIR/conf3_final.json"
 
 # --- v6: новое имя итогового конфига/pid/лога,  ---
@@ -97,8 +97,6 @@ CONF_TARGET="$WORKDIR/conf_chain6.json"
 MAIN_PIDFILE="/var/run/sb_chain6_main.pid"
 LOGFILE="$WORKDIR/sb_chain6.log"
 PORT_SHIFT=100
-# База conf3_final.json: 20081-20085 -> после сдвига: 20181-20185
-
 # Лог main-процесса не ротируется автоматически ничем внешним - обрезаем
 # сами, если он вырос больше ~1MB, чтобы не забивать flash за месяцы работы.
 if [ -f "$LOGFILE" ]; then
