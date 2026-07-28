@@ -98,10 +98,10 @@ Cross-Protocol Breeder — интеллектуальный шелл-скрип�
 | Тип | Entry (якорь) | Exit (выход) | Когда использовать |
 |:---|:---|:---|:---|
 | 🟢 `ss-ss` | Shadowsocks | Shadowsocks | Бюджетный вариант, быстрый отбор |
-| 🔵 `ss-vless` | Shadowsocks | VLESS | SS для входа (обходит DPI), VLESS на выходе |
-| 🟡 `ss-trojan` | Shadowsocks | Trojan | SS скрывает сам факт прокси, Trojan для скорости |
-| 🟣 `vless-ss` | VLESS | Shadowsocks | VLESS-обфускация в РФ/Китае, SS на финальном хопе |
-| 🟠 `trojan-ss` | Trojan | Shadowsocks | Trojan-инкапсуляция + дешёвый SS на выходе |
+| 🟢 `ss-vless` | Shadowsocks | VLESS | SS для входа (обходит DPI), VLESS на выходе |
+| 🟢 `ss-trojan` | Shadowsocks | Trojan | SS скрывает сам факт прокси, Trojan для скорости |
+| 🟢 `vless-ss` | VLESS | Shadowsocks | VLESS-обфускация в РФ/Китае, SS на финальном хопе |
+| 🟢 `trojan-ss` | Trojan | Shadowsocks | Trojan-инкапсуляция + дешёвый SS на выходе |
 
 ### ❌ Заблокированы скриптом
 
@@ -251,10 +251,10 @@ This approach allows using Shadowsocks to mask the first hop (bypassing simple D
 | Type | Entry (anchor) | Exit | When to use |
 |:---|:---|:---|:---|
 | 🟢 `ss-ss` | Shadowsocks | Shadowsocks | Budget option, fast pre-selection |
-| 🔵 `ss-vless` | Shadowsocks | VLESS | SS for entry (bypasses DPI), VLESS on exit |
-| 🟡 `ss-trojan` | Shadowsocks | Trojan | SS hides the fact of a proxy, Trojan for speed |
-| 🟣 `vless-ss` | VLESS | Shadowsocks | VLESS obfuscation under heavy DPI, SS on the final hop |
-| 🟠 `trojan-ss` | Trojan | Shadowsocks | Trojan encapsulation + cheap SS on exit |
+| 🟢 `ss-vless` | Shadowsocks | VLESS | SS for entry (bypasses DPI), VLESS on exit |
+| 🟢 `ss-trojan` | Shadowsocks | Trojan | SS hides the fact of a proxy, Trojan for speed |
+| 🟢 `vless-ss` | VLESS | Shadowsocks | VLESS obfuscation under heavy DPI, SS on the final hop |
+| 🟢 `trojan-ss` | Trojan | Shadowsocks | Trojan encapsulation + cheap SS on exit |
 
 ### ❌ Blocked by the script
 
@@ -407,10 +407,10 @@ chmod +x install.sh
 | نوع | Entry (لنگر) | Exit (خروج) | چه زمانی استفاده شود |
 |:---|:---|:---|:---|
 | 🟢 `ss-ss` | Shadowsocks | Shadowsocks | گزینه اقتصادی، انتخاب سریع |
-| 🔵 `ss-vless` | Shadowsocks | VLESS | SS برای ورودی (عبور از DPI)، VLESS در خروجی |
-| 🟡 `ss-trojan` | Shadowsocks | Trojan | SS پنهان‌کننده وجود پروکسی، Trojan برای سرعت |
-| 🟣 `vless-ss` | VLESS | Shadowsocks | پنهان‌سازی VLESS در برابر DPI شدید، SS در هاپ نهایی |
-| 🟠 `trojan-ss` | Trojan | Shadowsocks | کپسوله‌سازی Trojan + SS ارزان در خروجی |
+| 🟢 `ss-vless` | Shadowsocks | VLESS | SS برای ورودی (عبور از DPI)، VLESS در خروجی |
+| 🟢 `ss-trojan` | Shadowsocks | Trojan | SS پنهان‌کننده وجود پروکسی، Trojan برای سرعت |
+| 🟢 `vless-ss` | VLESS | Shadowsocks | پنهان‌سازی VLESS در برابر DPI شدید، SS در هاپ نهایی |
+| 🟢 `trojan-ss` | Trojan | Shadowsocks | کپسوله‌سازی Trojan + SS ارزان در خروجی |
 
 ### ❌ توسط اسکریپت مسدود شده‌اند
 
@@ -558,10 +558,10 @@ chmod +x install.sh
 | 类型 | Entry（入口） | Exit（出口） | 使用场景 |
 |:---|:---|:---|:---|
 | 🟢 `ss-ss` | Shadowsocks | Shadowsocks | 经济型方案，快速筛选 |
-| 🔵 `ss-vless` | Shadowsocks | VLESS | SS 作为入口（绕过 DPI），VLESS 作为出口 |
-| 🟡 `ss-trojan` | Shadowsocks | Trojan | SS 隐藏代理特征，Trojan 保证速度 |
-| 🟣 `vless-ss` | VLESS | Shadowsocks | 在强 DPI 环境下使用 VLESS 混淆，最终跳使用 SS |
-| 🟠 `trojan-ss` | Trojan | Shadowsocks | Trojan 封装 + 出口使用低成本 SS |
+| 🟢 `ss-vless` | Shadowsocks | VLESS | SS 作为入口（绕过 DPI），VLESS 作为出口 |
+| 🟢 `ss-trojan` | Shadowsocks | Trojan | SS 隐藏代理特征，Trojan 保证速度 |
+| 🟢 `vless-ss` | VLESS | Shadowsocks | 在强 DPI 环境下使用 VLESS 混淆，最终跳使用 SS |
+| 🟢 `trojan-ss` | Trojan | Shadowsocks | Trojan 封装 + 出口使用低成本 SS |
 
 ### ❌ 被脚本屏蔽的组合
 
@@ -709,10 +709,10 @@ chmod +x install.sh
 | النوع | Entry (المرساة) | Exit (الخروج) | متى تُستخدم |
 |:---|:---|:---|:---|
 | 🟢 `ss-ss` | Shadowsocks | Shadowsocks | خيار اقتصادي، اختيار سريع |
-| 🔵 `ss-vless` | Shadowsocks | VLESS | SS للدخول (تجاوز DPI)، VLESS للخروج |
-| 🟡 `ss-trojan` | Shadowsocks | Trojan | SS يخفي وجود البروكسي، Trojan من أجل السرعة |
-| 🟣 `vless-ss` | VLESS | Shadowsocks | تمويه VLESS في ظل DPI صارم، SS في القفزة الأخيرة |
-| 🟠 `trojan-ss` | Trojan | Shadowsocks | تغليف Trojan + SS رخيص في الخروج |
+| 🟢 `ss-vless` | Shadowsocks | VLESS | SS للدخول (تجاوز DPI)، VLESS للخروج |
+| 🟢 `ss-trojan` | Shadowsocks | Trojan | SS يخفي وجود البروكسي، Trojan من أجل السرعة |
+| 🟢 `vless-ss` | VLESS | Shadowsocks | تمويه VLESS في ظل DPI صارم، SS في القفزة الأخيرة |
+| 🟢 `trojan-ss` | Trojan | Shadowsocks | تغليف Trojan + SS رخيص في الخروج |
 
 ### ❌ محظورة من قبل السكربت
 
