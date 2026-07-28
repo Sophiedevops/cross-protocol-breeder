@@ -1,7 +1,7 @@
 # 🧬 cross-protocol-breeder
 
 ```text
-      /\_/\   [PROXY HYBRID MODULE • ENGINE v6]
+      /\_/\   [PROXY HYBRID MODULE  ENGINE ]
      ( o.o )  
       > ^ <   Cross-Protocol Breeder
            |\__/,|   (`\
